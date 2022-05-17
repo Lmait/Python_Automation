@@ -1,0 +1,158 @@
+https://docs.python.org/2/library/functions.html#input
+https://docs.python.org/2/library/functions.html#raw_input
+https://docs.python.org/2/library/functions.html#eval
+
+https://docs.python.org/3/library/functions.html#input
+https://docs.python.org/3/library/functions.html#eval
+==
+https://docs.python.org/3/library/subprocess.html
+
+!!!!!! Data Streams
+##### Reading Data interactively
+	input -  функция позволяет нам запрашивать у пользователя определенное значение
+	name = input("enter name: ")
+	print("Hello, " + name)
+	
+	Всегда возвращает строку.
+
+##### Standard Streams
+	I/O Streams
+	Потоки ввода-вывода являются основным механизмом для выполнения 
+	операций ввода и вывода в программах
+	STDIN
+	STDOUT
+	STDERR
+
+##### Environment Variables
+	env - посмотреть переменные окружения
+	echo $PATH - посмотреть конкретную переменную
+	
+	Вызов переменной из скрипта:
+	import os
+	os.environ.get("HOME", "") - получить переменную из dictionary по ключу HOME, 
+	если ключа нет - врени пустую строку
+	
+	присвоить переменную: export FRUIT=Pineapple 
+
+##### Command-Line Arguments and Exit Status
+	Аргументы командной строки - это параметры, которые передаются программе при ее запуске
+	Доступ к аргументам:
+	
+	cat parameters.py
+	#!/usr/bin/env python3
+	import sys
+	print(sys.argv)
+	
+	./parameters.py - нет параметров, вернет только имя скрипта
+	['./parameters.py']
+	
+	./parameters.py one two three - вернет имя и все параметры, как элементы list
+	['./parameters.py', 'one', 'two','three']
+	
+	Exit status — это значение, возвращаемое программой в оболочку.
+	в unix'ах 0 = успешное завершение процесса
+
+	$? = Exit status последней выполненной команды
+	echo $?
+	
+	python аналгично: 0 - успех
+
+!!!!!! Python Subprocesses
+##### Running System Commands in Python
+	Модуль subprocess. Его функции позволяют запускать системные команды в скриптах
+
+	import subprocess
+	subprocess.run(["date"])
+	Функция run возвращает обьект класса CompletedProcess (включает информацию о выполнении команды)
+	CompletedProcess(args=['date'], returncode=0)
+
+	При выполнении команды создается вторичная среда дочернего процесса, основной процесс (скрипт)
+	блокируется до выполнения дочернего.
+
+	subprocess.run(["sleep","2"])
+	Команда run получает на вход list, начинающийся с имени вызываемой команы, 
+	затем параметры передающиеся в команду (аргументы командной строки)
+
+	run - выводит результат не экран и не перехватывает output.
+	Для захвата и операции над выводом внешенй команды используются другую стратегию.
+
+
+
+##### Obtaining the Output of a System Command
+	Нужно выставить в true параметр вызова функции run - capture_output 
+	who - выводит пользователей залогиненных в комп
+	host - конвертит host name <=> IP
+
+	result = subprocess.run(["host", "8.8.8.8"], capture_output=True)
+	print(result.returncode)
+	0
+	print(result.stdout) - вывод, сгенерированным командой
+	b'8.8.8.8.in-addr.arpa domain name pointer dns.google.\n'
+	b - массив байтов: Python не знает, какую кодировку использовать для обработки вывода команды. 
+	Таким образом, он просто представляет его как серию байтов.
+
+	Для преобразования в нормальную строку используется метод decode (по умолчанию использует UTF-8)
+	print(result.stdout.decode().split())
+	['8.8.8.8.in-addr.arpa', 'domain', 'name', 'pointer', 'dns.google.']
+
+	Ошибки перехватываются в атрибут stderr
+
+##### Advanced Subprocess Management
+	Окружение дочернего процесса можно меняь.
+	Типовая стратегия:
+		создать копию окружения, видимого основным процессом
+		сделать нужные изенения
+		передать измененную копию в дочерний процесс	
+
+		import os
+		import subprocess
+
+		my_env = os.environ.copy() - содает новый словарь, копию окружения
+		my_env["PATH"] = os.pathsep.join(["/opt/myapp/", my_env["PATH"]]) - добавляем в пасы директорию /opt/myapp/
+
+		result = subprocess.run(["myapp"], env=my_env) запускает myapp со средой my_env
+
+		Еще параметры:
+		cwd - изменить current working dir (директорию исполнения команды)
+		например если нужно выполнить команду в нескольких директориях
+		
+		timeout - функция run убьет процесс по если он занимает больше отведенного времени.
+
+		shell - питон запустит инстанс системной оболочки и выполнит команду внутри нее.
+		(если нужно изменить или расширить глобальные параметры)
+
+!!!!!! Processing Log Files
+##### What are log files?
+
+##### Filtering Log Files with Regular Expressions
+	import re
+	import sys
+
+	logfile = sys.argv[1]
+	with open(logfile) as f:
+	    for line in f:
+	        if "CRON" not in line""
+	            continue
+	        pattern = r"USER \((\w+)\)$"
+	        result = re.search(pattern, line)
+	        print(result[1])
+
+
+##### Making Sense out of the Data
+	import re
+	import sys
+
+	logfile = sys.argv[1]
+	usernames = {}
+
+	with open(logfile) as f:
+	    for line in f:
+	        if "CRON" not in line""
+	            continue
+	        pattern = r"USER \((\w+)\)$"
+	        result = re.search(pattern, line)
+	        if result is None:
+	            continue
+	        name = result[1]
+	        usernames[name] = usernames.get(name, 0) + 1
+	print(usernames)

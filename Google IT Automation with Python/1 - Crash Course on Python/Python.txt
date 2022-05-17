@@ -1,0 +1,403 @@
+Online interpreters and codepads:
+https://www.python.org/shell/
+https://www.onlinegdb.com/online_python_interpreter
+https://repl.it/languages/python3
+https://www.tutorialspoint.com/execute_python3_online.php
+https://rextester.com/l/python3_online_compiler
+https://trinket.io/python3
+
+The official Python documentation: https://docs.python.org/3/
+==========================================
+
+
+Functions and Keywords:
+https://docs.python.org/3/library/functions.html
+
+List of Keywords in Python
+https://www.programiz.com/python-programming/keyword-list
+
+
+
+Keywords
+False	class	finally	is	return
+None	continue	for	lambda	try
+True	def	from	nonlocal	while
+and	del	global	not	with
+as	elif	if	or	yield
+assert	else	import	pass	
+break	except	in	raise
+=======================================
+
+Arithmetic operators
+a + b = Adds a and b
+a - b = Subtracts b from a
+a * b = Multiplies a and b
+a / b = Divides a by b
+a ** b = Elevates a to the power of b. For non integer values of b, this becomes a root (i.e. a**(1/2) is the square root of a)
+a // b = The integer part of the integer division of a by b
+a % b = The remainder part of the integer division of a by b
+
+
+
+DATA TYPES
+integer	'int'	2
+float	'float'	2.5
+string	'str'	"" и ''
+boolean
+Функция уточнения типа: type()
+======================================
+
+VARIABLES
+Без пробелов, начиная с буквы или '_'. Имя состоит из букв, цифр и '_'. Регистрозависимые
+asignment(присвоение): 'Variable = value'
+Преобразования (conversion):
+Неявные(Implicit): int + float
+Явные(Explicit): type() print("String" + str(2))
+======================================
+
+FUNCTIONS
+def name(parametres aka arguments):
+определение: 		def имяфункции(параметры):
+тело с отступом:	    тело 
+======================================
+
+RETURN
+>>> def area_triangle(base, height):
+...     return base*height/2
+Мультиретурн: 
+def func():
+    return ret1, ret2, ret3
+a, b, c = func()
+Если return не определен, то возвращается none (аналог null)
+======================================
+
+COMPARING
+Comparison operators
+a == b: a is equal to b
+a != b: a is different than b
+a < b: a is smaller than b
+a <= b: a is smaller or equal to b
+a > b: a is bigger than b
+a >= b: a is bigger or equal to b
+
+>>> print(10 == 1)
+False
+>>> print(10 != 1)
+True
+=====================================
+
+LOGICAL OPERATORS
+and or not
+Logical operators
+a and b: True if both a and b are True. False otherwise.
+a or b: True if either a or b or both are True. False if both are False.
+not a: True if a is False, False if a is True.
+
+>>> print("Yellow" > "Cyan" and "Brown" > "Magenta")
+False
+>>> print(25 > 50 or 1 !=2)
+True
+>>> print(not 42 == "Answer")
+True
+=====================================
+
+BRANCHING - Ветвление, условные операторы:
+IF
+elif = else if
+
+if condition1:
+	if-block
+elif condition2:
+	elif-block
+else:
+	else-block
+
+elif = else if
+
+def number_group(number):
+  if number > 0:
+    return "Positive"
+  elif number < 0:
+    return "Negative"
+  else:
+    return "Zero"
+=====================================
+
+LOOPS
+For - для последовательности элементов
+While - пока состояние не изменится
+
+WHILE
+while x < 5:
+
+while condition:
+    body
+
+Things to watch out for!
+Failure to initialize variables. Make sure all the variables used in the loop’s condition  are initialized before the loop.
+Unintended infinite loops. Make sure that the body of the loop modifies the variables used in the condition, so that the loop will eventually end for all possible values of the variables.
+
+FOR
+for x in range(5):
+старт с 0 и на 1 меньше целевого значения
+
+for variable in sequence
+    body
+
+range() generates a sequence of integer numbers. It can take one, two, or three parameters:
+
+range(n): 0, 1, 2, ... n-1
+range(x,y): x, x+1, x+2, ... y-1
+range(p,q,r): p, p+r, p+2r, p+3r, ... q-1 (if it's a valid increment)
+
+Common pitfalls:
+Forgetting that the upper limit of a range() isn’t included.
+Iterating over non-sequences. Integer numbers aren’t iterable. Strings are iterable letter by letter, but that might not be what you want.
+
+for для любых последовательностей:
+>>> friends = ['Taylor','Alex','Pat','Eli']
+>>> for friend in friends:
+...     print("Hi " + friend)
+...
+Hi Taylor
+Hi Alex
+Hi Pat
+Hi Eli
+
+Разные конструкции FOR:
+1н параметр: for x in range(5): #0 1 2 3 4 
+2 параметра: for i in range(1,6): # 1 2 3 4 5
+3й параметр - шаг: for x in range(0,101,10): 0, 10, 20, ... 100
+>>> def to_celsius(x):
+...     return (x-32)*5/9
+...
+>>> for x in range(0,101,10):
+...     print(x, to_celsius(x))
+...
+0 -17.77777777777778
+10 -12.222222222222221
+20 -6.666666666666667
+30 -1.1111111111111112
+40 4.444444444444445
+50 10.0
+60 15.555555555555555
+70 21.11111111111111
+80 26.666666666666668
+90 32.22222222222222
+100 37.77777777777778
+>>>
+
+Nested loops (Вложенные циклы)
+>>> for left in range(7):
+...     for right in range(left,7):
+...          print ("[" + str(left) + "|" + str(right) + "]", end=" ")
+...     print()
+
+Break & Continue
+You can interrupt both while and for loops using the break keyword. We normally do this to interrupt a cycle due to a separate condition.
+You can use the continue keyword to skip the current iteration and continue with the next one. This is typically used to jump ahead when some of the elements of the sequence aren’t relevant.
+https://wiki.python.org/moin/ForLoop
+
+RECURSION
+Вызов функцией самой себя до особого события
+По дефолту - 1000 рекурсивных вызовов
+def recursive_function(parameters):
+    if base_case_condition(parameters):
+        return base_case_value
+    recursive_function(modified_parameters)
+
+
+=======================================
+Basic Structures Introduction
+Strings, Lists and Dictionaries
+
+String - Текст, заключается в "" или '', Конкатенация через +,
+строки неизменяемые.
+Нельзя изменить текущую, можно присвоить новую
+
+умножение строк через * 
+>>> "text" * 3
+'texttexttext'
+Длина строки:
+>>> len("pet")
+3
+
+String indexing:
+>>> name = "Jaylen"
+>>> print(name[0])
+J
+>>> print(name[-1])
+n
+>>> print(name[-2])
+e
+>>>
+
+Slice - часть текста, подстрока
+>>> fruit = "Mangosteen"
+>>> fruit[1:4]
+'ang'
+>>> fruit[:5]
+'Mango'
+>>> fruit[5:]
+'steen'
+>>> fruit[:5] + fruit[5:]
+'Mangosteen'
+
+Поиск индекса:
+>>> pets = "Cats & Dogs"
+>>> pets.index("&")
+5
+>>> pets.index("C")
+0
+>>> pets.index("s") - Возвращает первое совпадение
+3
+>>> pets.index("Dog")
+7
+>>> Если нет значения - ошибка "Substring not fount"
+для проверки используется keyword "in"
+>>> "Dragons" in pets
+False
+>>> "Cats" in pets
+True
+>>>
+
+Прочие методы:
+>>> "Mountains".upper()
+'MOUNTAINS'
+>>> "КАПСЛОК".lower()
+'капслок'
+>>>
+
+>>> answer = 'YES'
+>>> if answer.lower() == "yes":
+...     print("User sais yes")
+...
+User sais yes
+>>>
+
+Трим строки:
+>>> " yes ".strip()
+'yes'
+>>> " yes ".lstrip()
+'yes '
+>>> " yes ".rstrip()
+' yes'
+
+Сколько раз встречается подстрока
+>>> "e1 e2 e3 e4".count("e")
+4
+>>> "e1 e2 e3 e4 e5".count("e")
+5
+>>>
+
+Проверка окончания:
+>>> 'Forest'.endswith("rest")
+True
+
+Состоит ли из чисел:
+>>> 'Forest'.isnumeric()
+False
+>>> '12234'.isnumeric()
+True
+
+int переведет числовую строку в число:
+>>> int("12345") + int("54321")
+66666
+
+Еще конкатенация:
+>>> " 1 ".join(["Раз","два","три","четыре"])
+'Раз 1 два 1 три 1 четыре'
+>>> "...".join(["Раз","два","три","четыре"])
+'Раз...два...три...четыре'
+
+Сплит - разделит строку по разделителям:
+>>> "Это строка с пробелами".split() - по дефолту пробел
+['Это', 'строка', 'с', 'пробелами']
+>>> "Это.строка.с.точками".split(".")
+['Это', 'строка', 'с', 'точками']
+
+====================
+def initials(phrase):
+    words = phrase.split()
+    result = ""
+    for word in words:
+        result += word[0].upper()
+    return result
+
+print(initials("Universal Serial Bus")) # Should be: USB
+print(initials("local area network")) # Should be: LAN
+print(initials("Operating system")) # Should be: OS
+=================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+====================================================
+EXAMPLES
+====================================================
+
+RECURSION
+def sum_positive_numbers(n):
+    # The base case is n being smaller than 1
+    if n < 1:
+        return 0
+
+    # The recursive case is adding this number to 
+    # the sum of the numbers smaller than this one.
+    return n + sum_positive_numbers(n-1)
+
+print(sum_positive_numbers(3)) # Should be 6
+print(sum_positive_numbers(5)) # Should be 15
+====================================================
+
+Nested loops (Вложенные циклы)
+>>> for left in range(7):
+...     for right in range(left,7):
+...          print ("[" + str(left) + "|" + str(right) + "]", end=" ")
+...     print()
+...
+[0|0] [0|1] [0|2] [0|3] [0|4] [0|5] [0|6]
+[1|1] [1|2] [1|3] [1|4] [1|5] [1|6]
+[2|2] [2|3] [2|4] [2|5] [2|6]
+[3|3] [3|4] [3|5] [3|6]
+[4|4] [4|5] [4|6]
+[5|5] [5|6]
+[6|6]
+====================================================
+
+color = "Yellow"
+thing = "sunshine"
+print(color + " is the color of " + thing)
+
+
+ratio = ((1+(5**1/2))/2)
+print(ratio)
+
+
+>>> def area_triangle(base, height):
+...     return base*height/2
+...
+>>> area_a = area_triangle(5,4)
+>>> area_b = area_triangle(7,3)
+>>> sum = area_a + area_b
+>>> print("The sum of both areas is: " + str(sum))
+The sum of both areas is: 20.5
+
+def get_seconds(hours, minutes, seconds):
+  return 3600*hours + 60*minutes + seconds
+
+amount_a = get_seconds(2, 30, 0)
+amount_b = get_seconds(0, 45, 15)
+result = amount_a+amount_b
+print(result)

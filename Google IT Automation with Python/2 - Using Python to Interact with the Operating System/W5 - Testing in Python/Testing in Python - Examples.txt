@@ -1,0 +1,140 @@
+!!!!!! Simple Tests
+##### What is testing?
+##### Manual Testing and Automated Testing
+
+!!!!!! Unit Tests
+##### Unit Tests
+##### Writing Unit Tests in Python
+##### Edge Cases
+##### Additional Test Cases
+
+rearrange.py
+#!/usr/bin/env python3
+
+import re
+
+def rearrange_name(name):
+    result = re.search(r"^([\w .]*), ([\w .]*)$", name)
+    if result is None:
+        return name
+    return "{} {}".format(result[2], result[1])
+
+rearrange_test.py
+#!/usr/bin/env python3
+
+from rearrange import rearrange_name
+import unittest
+
+class TestRearrange(unittest.TestCase): 
+    def test_basic(self):
+        testcase = "Lovelace, Ada"
+        expected = "Ada Lovelace"
+        self.assertEqual(rearrange_name(testcase), expected)
+
+    def test_empty(self):
+        testcase = ""
+	expected = ""
+	self.assertEqual(rearrange_name(testcase), expected)
+
+    def test_double_name(self):
+        testcase = "Hopper, Grace M."
+        expected = "Grace M. Hopper"
+        self.assertEqual(rearrange_name(testcase), expected)
+
+    def test_one_name(self):
+        testcase = "Voltaire"
+        expected = "Voltaire"
+        self.assertEqual(rearrange_name(testcase), expected)
+
+unittest.main()
+ 
+
+##### Additional Test Cases
+import re 
+  
+my_txt = "An investment in knowledge pays the best interest."
+
+def LetterCompiler(txt):
+    result = re.findall(r'([a-c]).', txt)
+    return result
+
+print(LetterCompiler(my_txt))
+
+....
+
+import unittest
+
+class TestCompiler(unittest.TestCase):
+
+    def test_basic(self):
+        testcase = "The best preparation for tomorrow is doing your best today."
+        expected = ['b', 'a', 'a', 'b', 'a']
+        self.assertEqual(LetterCompiler(testcase), expected)
+
+...
+
+unittest.main(argv = ['first-arg-is-ignored'], exit = False)
+
+...
+
+class TestCompiler2(unittest.TestCase):
+    
+    def test_two(self):
+        testcase = "A b c d e f g h i j k l m n o q r s t u v w x y z"
+        expected = ['b', 'c']
+        self.assertEqual(LetterCompiler(testcase), expected)
+
+# EDGE CASES HERE
+
+unittest.main(argv = ['first-arg-is-ignored'], exit = False)
+
+...
+
+!!!!!! Other Test Concepts
+##### Black Box vs. White Box
+##### Other Test Types
+##### Test-Driven Development
+
+!!!!!! Errors and Exceptions
+##### The Try-Except Construct
+##### Raising Errors
+##### Testing for Expected Errors
+...
+def RemoveValue(myVal):
+    if myVal not in my_list:
+        raise ValueError("Value must be in the given list")
+    else:
+        my_list.remove(myVal)
+    return my_list
+
+print(RemoveValue(27))
+...
+
+...
+def OrganizeList(myList):
+    for item in myList:
+        assert type(item) == str, "Word list must be a list of strings"
+    myList.sort()
+    return myList
+
+print(OrganizeList(my_new_list))
+...
+
+...
+# Revised Guess() function
+def Guess(participants):
+    my_participant_dict = {}
+    for participant in participants:
+        my_participant_dict[participant] = random.randint(1, 9)
+    try:
+        if my_participant_dict['Larry'] == 9:
+            return True
+        else:
+            return False
+    except KeyError:
+        return None
+
+participants = ['Cathy','Fred','Jack','Tom']
+print(Guess(participants))
+...
+

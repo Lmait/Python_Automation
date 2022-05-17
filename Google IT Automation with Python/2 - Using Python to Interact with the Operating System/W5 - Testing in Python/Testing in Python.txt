@@ -1,0 +1,177 @@
+Best of Unit Testing Standard Library Module
+Understand a Basic Example:
+	https://docs.python.org/3/library/unittest.html#basic-example
+Understand how to run the tests using the Command Line:
+	https://docs.python.org/3/library/unittest.html#command-line-interface
+Understand various Unit Test Design Patterns:
+	https://docs.python.org/3/library/unittest.html#organizing-test-code
+Understand more specific assertions such as assertRaises
+	https://docs.python.org/3/library/unittest.html#unittest.TestCase.assertRaises
+
+assertEqual(a, b)	a == b
+assertNotEqual(a, b)	a != b
+assertTrue(x)		bool(x) is True
+assertFalse(x)		bool(x) is False
+assertIs(a, b)		a is b
+assertIsNot(a, b)	a is not b
+assertIsNone(x)		x is None
+assertIsNotNone(x)	x is not None
+assertIn(a, b)		a in b
+assertNotIn(a, b)	a not in b
+assertIsInstance(a, b)	isinstance(a, b)
+assertNotIsInstance(a, b)	not isinstance(a, b)
+
+Check out the following links for more information:
+
+	https://landing.google.com/sre/sre-book/chapters/monitoring-distributed-systems/
+	https://landing.google.com/sre/sre-book/chapters/testing-reliability/
+	https://testing.googleblog.com/2007/10/performance-testing.html
+	https://www.guru99.com/smoke-testing.html
+	https://www.guru99.com/exploratory-testing.html
+	https://testing.googleblog.com/2008/09/test-first-is-fun_08.html
+
+Handling Errors Cheat-Sheet
+Raise allows you to throw an exception at any time.
+	https://docs.python.org/3/tutorial/errors.html#raising-exceptions
+
+Assert enables you to verify if a certain condition is met and throw an exception if it isn’t.
+	https://docs.python.org/3/reference/simple_stmts.html#the-assert-statement
+	https://stackoverflow.com/questions/5142418/what-is-the-use-of-assert-in-python
+
+The standard library documentation is kind of unclear. Basically `assert <something false>` will raise AssertionError, which the caller may need to handle.
+In the try clause, all statements are executed until an exception is encountered.
+	https://docs.python.org/3/tutorial/errors.html#handling-exceptions
+
+Except is used to catch and handle the exception(s) that are encountered in the try clause.
+	https://docs.python.org/3/library/exceptions.html#bltin-exceptions
+
+Other interesting Exception handling readings:
+	https://doughellmann.com/posts/python-exception-handling-techniques/
+
+
+!!!!!! Simple Tests
+##### What is testing?
+##### Manual Testing and Automated Testing
+
+!!!!!! Unit Tests
+##### Unit Tests
+	Модульные тесты используются для проверки правильности небольших изолированных частей программы.
+	Импортирование функции:
+		from модуль    import функция
+		from rearrange import rearrange_name
+	Можно использовать функцию без указания модуля
+
+	
+##### Writing Unit Tests in Python
+Модуль unittest
+Класс TestCase 
+
+	rearrange.py
+
+	#!/... python3
+
+	>>> import re
+	>>> def rearrange_name(name):
+	...     result = re.search(r"^([\w .]*), ([\w .]*)$", name)
+	...     return "{} {}".format(result[2], result[1])
+
+	rearrange_test.py
+	#!/... python3
+
+	from rearrange import rearrange_name
+	import unittest
+
+	class TestRearrange(unittest.TestCase): 
+	### создаем свой класс TestR.. наследующий класс TestCase модуля unittest
+	### все методы с префиксом test автоматом станут тестами для фреймворка
+	    def test_basic(self):
+	        testcase = "Lovelace, Ada"
+	        expected = "Ada Lovelace"
+	        self.assertEqual(rearrange_name(testcase), expected)
+	### assertEqual подразумевает, что оба ее аргумента равны. Если да - тест пройден
+	
+	unittest.main()
+
+
+##### Edge Cases
+	Пограничные случаи являются входами в наш код, которые дают неожиданные результаты
+	и находятся на крайних концах диапазонов ввода, с которыми, как мы думаем, 
+	наши программы обычно работают. Краевые случаи обычно нуждаются в специальной обработке в скриптах,
+	чтобы код продолжал вести себя правильно.
+
+	rearrange_test.py
+
+	#!/... python3
+
+	from rearrange import rearrange_name
+	import unittest
+
+	class TestRearrange(unittest.TestCase): 
+	    def test_basic(self):
+	        testcase = "Lovelace, Ada"
+	        expected = "Ada Lovelace"
+	        self.assertEqual(rearrange_name(testcase), expected)
+
+	    def test_empty(self):
+	        testcase = ""
+		expected = ""
+		self.assertEqual(rearrange_name(testcase), expected)
+
+	unittest.main()
+
+
+	rearrange.py
+
+	#!/... python3
+
+	>>> import re
+	>>> def rearrange_name(name):
+	...     result = re.search(r"^([\w .]*), ([\w .]*)$", name)
+		if result is None:
+		    return ""
+	...     return "{} {}".format(result[2], result[1])
+
+
+##### Additional Test Cases
+
+!!!!!! Other Test Concepts
+##### Black Box vs. White Box
+##### Other Test Types
+##### Test-Driven Development
+
+!!!!!! Errors and Exceptions
+##### The Try-Except Construct
+	try:
+	    f = open(filename)
+	except OSError
+	    return None
+	
+	except ошибки выполняется только при соответствующей ошибке в блоке try
+	return None при ошибке - частый паттерн
+
+##### Raising Errors
+	raise - ключевое слово для генерации ошибки
+	можно поднимать типовые ошибки или придумывать свои
+
+	assert. пытается проверить, что условное выражение истинно, и если оно ложно, 
+	оно вызывает ошибку утверждения с указанным сообщением
+
+
+def validate_user(username, minlen):
+    assert type(username) == str, "username must be a string"
+    if minlen < 1:
+        raise ValueError("minlen must be at least 1")
+    if len(username) < minlen
+        return False
+    if not username.isalnum():
+        return False
+    return True
+
+##### Testing for Expected Errors
+	assertRaises - метод дял проверки что выдается нужная ошибка
+
+	def test_invalid_minlen(self):
+	    self.asserRaises(ValueError, validate_user, "user", -1)
+	сначала передаем ошибку, которую мы ожидаем, что функция поднимет. 
+	Затем имя функции, 
+	Затем любые параметры, которые должны быть переданы этой функции

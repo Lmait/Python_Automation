@@ -1,0 +1,4 @@
+email (greedy-не строгое): regex = r"[\w.%+-]+@[\w.-]+"
+Маскируем email: re.sub(r"[\w.%+-]+@[\w.-]+", "[REDACTED]", "Recieved an email for go_nuts95@my.example.com")
+
+[12345] (PID): regex = r"\[(\d+)\]"

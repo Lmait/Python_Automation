@@ -1,0 +1,16 @@
+!!!!!! Interacting with the Command Line Shell
+##### Basic Linux Commands
+##### Redirecting Streams
+##### Pipes and Pipelines
+##### Signalling Processes
+
+!!!!!! Bash Scripting
+##### Creating Bash Scripts
+##### Using Variables and Globs
+##### Conditional Execution in Bash
+
+!!!!!! Advanced Bash Concepts
+##### While Loops in Bash Scripts
+##### For Loops in Bash Scripts
+##### Advanced Command Interaction
+##### Choosing Between Bash and Python

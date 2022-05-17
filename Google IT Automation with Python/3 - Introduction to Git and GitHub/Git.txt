@@ -1,0 +1,243 @@
+git push https://<GITHUB_ACCESS_TOKEN>@github.com/<GITHUB_USERNAME>/<REPOSITORY_NAME>.git
+
+Best Practices for Collaboration
+		1 - начинай работу с синхронизации
+		2 - избегай крупных масштабных изменений, стремимся к атомарности
+		3 - используй ветвление (мерджи изменения мастера в свою ветку)
+		4 - не используй rebase для изменений на хабе (только локал)
+		5 - делай информативные сообщения коммитов
+
+Системные настройки хранятся в /etc/gitconfig:
+git config --system
+
+Глобальные настройки для пользователя хранятся в ~/.gitconfig:
+git config --global
+
+Локальные настройки хранятся в репозитории в .git/config:
+git config --local (default)
+
+Настройки нижних уровней перекрывают настройки верхней уровней.
+
+Получение справки:
+$ git help <команда>
+$ git <команда> --help
+$ man git-<команда>
+
+Создание и клонирование репозитория
+–
+Создание репозитория
+$ git init
+
+Клонирование существующего репозитория
+$ git clone https://github.com/libgit2/libgit2
+
+Поддерживаемые протоколы:
+https://, git:// или SSH: user@server:path/to/repo.git
+
+==========Introduction to Version Control
+
+####Git init, Git Basics
+	git config -l
+	git config --global user.name ""
+	git config --global user.email ""
+	https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-github-user-account/managing-email-preferences/setting-your-commit-email-address
+	--global значит - для всех репозиториев (можно елать разные для отдельных репозитриев)
+	git init = создать новый репозиторий
+	git clone = создать копию существующего
+	working tree = область снаружи .git
+	Проект git состоит из 3х частй - Git directory, working tree, staging area
+		Git directory - история всех файлов и изменений
+		working tree - текущее состояние проекта, включая изменения
+		staging area - (или index - файл содержащий всю информацию о следующем коммите)
+	git add - добавить файл в stagin area
+	git status - инфо о working tree и предстоящих изменениях
+	Файлы - tracked or untracked. Tracked = modified, staged or committed
+	git commit = откроет текстовый редактор для сообщения коммита
+	git commit -m "comment" - быстрый коммит 
+
+The Basic Git Workflow:
+	git init -> create file -> git add -> git commit
+	
+
+
+==========Using Git Locally
+
+####Advanced Git interaction
+	Skipping the Staging Area
+		git commit -a -m "текст" = skip git staging (только уже отслеживаемые файлы)
+		HEAD -> текущая рабочая область (ветка)
+
+	Getting More Information About Our Changes
+		git log -p = развернутый лог (q = exit)
+		git show "номер коммита" = - развернутый лог коммита
+		git log --stat = статус коммита по добавленным/удаленным файлам/строкам
+		git diff = текущие изменения в файлах (unstaged)
+		git diff --staged = текущие изменения в файлах (в stage)
+		git add -p  = покажет текущие изменения перед staging
+
+	Deleting and Renaming Files
+		git rm = перестать отслеживать файл и исключиь из рабочей директории
+		git mv "имя" "имя" = переименовать или переместить (как в линухе)
+		.gitignore = файл с правилами игнорирования файлов (echo filename > .gitignore)
+		изменения в .gitignore так же требуют add и commit
+
+####Undoing Things
+	Undoing Changes Before Committing
+	Amending Commits
+	Rollbacks
+		"git revert" - Новый коммит с изменениями, обратными откатываемому
+			(автоматом добавляет номер отмененного коммита в сообщение)
+		$ git revert HEAD
+
+	Identifying a Commit
+		git show "хэш коммита" - поиск по хэшу коммита (можно по нескольким первым уникальным символам)
+		$ git revert commithashnum
+
+	Git Revert Cheat Sheet
+	https://git-scm.com/book/en/v2/Git-Basics-Undoing-Things
+	https://git-scm.com/docs/git-reset#_examples
+	https://git-scm.com/docs/git-revert
+	https://jwiegley.github.io/git-from-the-bottom-up/3-Reset/4-doing-a-hard-reset.html
+	https://git-scm.com/docs/git-commit#Documentation/git-commit.txt---amend
+
+####Branching and Merging
+	Creating New Branches
+		git branch - список всех веток репо. * помечена текущая ветка рабочего пространства
+		git branch new_branch - создать ветку с именем new_branch на основе значения HEAD
+		git checkout - переключиться на ветку (рабочее пространство приводится в соответствие 
+		с выбранной веткой)
+		git checkout new_branch - (звездочка переместится на ветку new_branch)
+		git checkout -b new_branch2 - создать новую ветку и сразу переключиться на нее
+
+	Working with Branches
+		git branch -d - удалить указанную ветку
+		Если удаляемая векта несмержена в мастер - Git ругнется
+		Удалить принудительно git branch -D
+
+	Merging
+		Перейти в ветку master
+		git merge "имя ветки" -вмерджить указанную ветку в мастер
+		2 типа слияния - fast forward (когда есть только дельта) и 
+		по трем точкам (когда разьахались ветки - 3 точки -последние коммиты веток и последний общий) 
+
+	Merge Conflicts
+		после ошибки git merge запускаем git status - детали о конфликте
+		нужно исправить конфликт в каждом файле, запустить git add для подтверждения, 
+		затем git commit или git merge --abort для отмены
+		git log --graph --oneline - показать график и историю мерджей
+
+==========Introduction to Git and GitHub
+
+####Basic Interaction with GitHub
+	Clone
+		git clone url = скачать репо в pwd
+		.md = markdown
+		git push = отправить на хаб
+		git config --global credential.helper cache = включить кэширование пароля (15 мин)
+		git pull - выкачать изменения с хаба
+	This can be useful for keeping your local workspace up to date.
+	https://help.github.com/en/articles/caching-your-github-password-in-git
+	https://help.github.com/en/articles/generating-an-ssh-key
+
+	Using a Remote Repository
+		Перед PUSH нужен fetch (внесение правок из сети  на локал)
+	
+	Working with Remotes
+		при git clone делается копия с origin name
+		git remote -v = показать откуда сетевую часть репо
+		origin  https://github.com/Lmait/Git_Notes.git (fetch)
+		origin  https://github.com/Lmait/Git_Notes.git (push)
+		Обычно одинаковые, но может быть например http на fetch
+		git remote show origin = детальная инфо о источнике
+		git branch -r = удаленный ветки
+		git status покажет инфо по удаленным веткам
+
+	Fetching New Changes
+		git remote show origin == Local out of date - есть изменения на хабе
+		git fetch для синхронизации - копирует (на локал?) коммиты из веток на хабе
+		git checkout origin/master = переключиться на ветку с хаба
+		(затем можно сделать из нее ветку на локале) 
+		git log origin/master = лог ветки на хабе
+
+	Updating the Local Repository
+		git pull = fetch + merge = выкачивает ветку и сразу пытается смерджить
+		git log -p -1 = посмотреть изменения после пула
+		git remote update = fetch всех удаленных веток
+
+	Solving Conflicts - The Pull-Merge-Push Workflow
+		пытаемся git push - failed
+		git pull - получае конфликт. маркер конфликта ">>>"
+		git log --graph --oneline --all = вывести граф веток
+		git log -p origin/master = посмотреть историю конкретной ветки в деталях
+		правим файл, делаем по не му git add, git commit, git push
+		git log --graph --oneline = смотрим граф слияния
+
+	Pushing Remote Branches
+		git push -u origin refactor = апстрим в ориджин ветка рефактор
+
+	Rebasing Your Changes
+		git rebase = Rebasing means changing the base commit that's used for our branch
+		We run the command git rebase, followed by the branch that we want to set as the new base.
+		checkout ветки которую переносим, затем git rebase "ветка база"
+		Удаляем ветки: 
+			на хабе: git push --delete origin branch_name
+			на локале: git branch -d branch_name
+
+	Best Practices for Collaboration
+		1 - начинай работу с синхронизации
+		2 - избегай крупных масштабных изменений, стремимся к атомарности
+		3 - используй ветвление (мерджи изменения мастера в свою ветку)
+		4 - не используй rebase для изменений на хабе (только локал)
+		5 - делай информативные сообщения коммитов
+	Conflict Resolution Cheat Sheet
+		https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/about-merge-conflicts
+		https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/resolving-a-merge-conflict-using-the-command-line
+		https://git-scm.com/book/en/v2/Git-Branching-Rebasing
+		https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History
+
+
+==========Collaboration
+	Squashing Changes
+	Pull Requests
+		A pull request is a commit or series of commits that you send to the owner of the repository 
+		so that they incorporate it into their tree
+		
+		git rebase -i master = интерактивный ребэйс
+		https://help.github.com/en/articles/about-pull-request-merges
+		git push -f = force push
+
+	Code Reviews
+		Doing a code review means going through someone else's code, 
+		documentation or configuration and checking that it all makes sense
+		and follows the expected patterns.
+		
+		Code Reviews
+		http://google.github.io/styleguide/
+		https://help.github.com/en/articles/about-pull-request-reviews
+		https://medium.com/osedea/the-perfect-code-review-process-845e6ba5c31
+		https://smartbear.com/learn/code-review/what-is-code-review/
+
+	Additional Tools
+		https://arp242.net/diy.html 
+		https://help.github.com/en/articles/closing-issues-using-keywords
+		https://help.github.com/en/articles/setting-guidelines-for-repository-contributors 
+		https://www.infoworld.com/article/3271126/what-is-cicd-continuous-integration-and-continuous-delivery-explained.html
+		https://stackify.com/what-is-cicd-whats-important-and-how-to-get-it-right/
+		https://docs.travis-ci.com/user/tutorial/
+		https://docs.travis-ci.com/user/build-stages/
+
+========== Summary
+	- Git concepts,typical Git workflow, basic interaction with the service
+	- advanced commands, (skipping the staging area, getting additional info about our commits)
+	- delete and rename files
+	- undo things. (revert unstaged and staged changes, how to amend commits)
+	- how to perform rollbacks, whether from the latest commit or an older one. 
+	- branching. (create, switch to, and delete branches).
+	- merge branches, merge conflicts.
+	- basic interaction with the GitHub,remote repositories and the distributed nature of Git
+	- pull data down from remote repositories, push our local changes to them, 
+	- resolve conflicts that pop-up when our local and remote branches are out of sync. 
+	- rebase. 
+	- collaboration through GitHub,
+	- typical workflow for pull requests, 
+	- code reviews.

@@ -1,0 +1,190 @@
+https://docs.python.org/3/howto/regex.html
+https://docs.python.org/3/library/re.html
+https://docs.python.org/3/howto/regex.html#greedy-versus-non-greedy
+regex101.com
+https://regexcrossword.com/
+
+
+
+!!!!!! Regular Expressions
+##### A regular expression, also known as regex or regexp, is essentially 
+	a search query for text that's expressed by string pattern.
+	import re
+	result = re.serach(regexp, string)
+	[****] = r"\[(d+)\]" - последовательность номеров в []
+
+##### Basic Matching with grep
+	Case Sensitive!
+	-i = ignore case
+	grep thon /usr/share/dict/words
+	grep -i thon /usr/share/dict/words
+	grep l.rts /usr/share/dict/words
+		"." = any character
+		"^" = начинается с
+		"$" = заканчивается
+	grep ^fruit
+	grep cat$
+
+!!!!!! Basic Regular Expressions
+##### Simple Matching in Python	
+	import re
+	r в начале паттерна = rawstring (не интерпретировать текс для поиска на предмет управляющих символов)
+		result = re.search(r"aza", "plaza")
+		print(result)
+		<re.Match object; span=(2,5), match='aza'> - есть совпадение, span - индексы куска (позиция в строке)
+		match - что именно совпало
+		re.search(r"p.ng", "penguin")
+		<re.Match object; span=(0,4), match='peng'
+		re.search(r"p.ng", "clapping")
+		<re.Match object; span=(4,8), match='ping'
+		re.search(r"p.ng", "sponge")
+		<re.Match object; span=(1,5), match='pong'
+
+		None - если нет совпадения
+
+		re.search(r"^x", "xenon") - начало строки
+		re.search(r"p.ng", "penguin") - . = любой символ
+		re.search(r"p.ng", "Pangaea", re.IGNORECASE) - игнорируем регистр
+		<re.Match object; span=(0,4), match='Pang'>
+
+		re.search(r"", "string")
+		re.search(r"", "string")
+		re.search(r"", "string")
+
+##### Wildcards and Character Classes
+	Character Classes
+		re.search(r"[Pp]ython","Python")
+		re.search(r"[a-z]way","the highway") .. match = 'hway'
+		re.search(r"cloud[a-zA-Z0-9]","cloudy").. match = 'cloudy'
+		re.search(r"cloud[a-zA-Z0-9]","cloud9").. match = 'cloud9'
+		^ - не попадает в группу []
+		re.search(r"cloud[^a-zA-Z0-9]","This is a sentence.") .. match = ' ' - любой символ не буква, сматчил первый пробел
+		re.search(r"cloud[^a-zA-Z0-9 ]","This is a sentence.") .. match = '.' - добавили в отрицание пробел, нашел точку
+		| - или
+		re.search(r"cat|dog","I like cats.") .. match = 'cat'
+		re.search(r"cat|dog","I like dogs.") .. match = 'dog'
+		re.search(r"cat|dog","I like both dogs and cats.") .. match = 'dog' - есть оба варианта, но находит певое попавшееся
+
+		re.findall - Если нужно найти все совпадения.
+		print(re.findall(r"cat|dog","I like both dogs and cats."))
+		['dog','cat']
+
+##### Repetition Qualifiers
+	Repeated matches
+		.* - соответствие любому символу, повторяему любое количество раз (включая ноль раз)
+		re.search(r"Py.*n", "Pygmalion") .. match='Pygmalion'
+		re.search(r"Py.*n", "Python Programming") .. match='Python Programmin' - т.к. ищет максимальное число символов
+
+		greedy запрос
+		Если хотим учитывать только буквы (без пробелов) надо использовать класс символов (character class)
+		re.search(r"Py[a-z]*n", "Python Programming") .. match='Python'
+		re.search(r"Py[a-z]*n", "Pyn") .. match='Pyn' - т.к. любое количество раз (включая ноль раз)
+	Реализации регулярных выражений не всегда одинаковы
+	в grep только *
+	в Python есть еще + и ?
+
+	+ - одно или более появлений символа, стоящего перед +
+		re.search(r"o+l+", "goldfish") .. match='ol' - по одному символу из обоих, выдает кротчайшую допустимую чтроку
+		re.search(r"o+l+", "woolly") .. match='ooll'
+		re.search(r"o+l+", "boil") .. None - т.к. буква между o и l
+
+	? - ноль или одно появлений символа, стоящего перед ?
+		re.search(r"p?each", "To each their own.") .. match='each' - т.к. p - опционально
+		re.search(r"p?each", "I like peaches") .. match='peach'
+
+##### Escaping characters
+	Escaping Caracters - символ экранирования: "\"
+		re.search(r".com", "welcome") .. match='lcom'
+		re.search(r"\.com", "welcome") .. None
+		re.search(r"\.com", "domain.com") .. match='.com'
+
+	\ используется в управляющих последовательностях \n \t
+	чтобы игнорировать их и читать как просто символы используется rawstring - буква r перед "regexp"
+
+	спецсимволы питона:
+		\w - любой буквенно\цифровой набор включая буквы, цифры и "_"
+		re.search(r"\w*", "This is an example") .. match='This' - пробле не входит в w
+		re.search(r"\w*", "This_is_an example") .. match='This_is_an'
+		\d - digits (цифры)
+		\s - whitespace = пробел, табуляция, новая строка
+		\b - word boundaries
+
+##### Regular Expressions in Action
+	re.search(r"^A.*a$", "Australia") .. match='Australia'- слово начинается на А и заканчивается а
+	Паттерн проверяющий валидность строковой переменной в Питоне (буквы, цифры, _ и не начинается с цифры):
+		r"^[a-zA-Z_][a-zA-Z0-9_]*$"
+
+!!!!!! Advanced Regular Expressions
+##### Capturing Groups
+	Группы захвата — это части шаблона, которые заключены в круглые скобки
+	Match - обьект соответствия
+		result = re.search(r"^(\w*), (\w*)$", "Lovelace, Ada") - помещаем нужные группы в скобки
+		print(result)
+		<re.Match object; span=(0, 13), match='Lovelace, Ada'>
+		print(result.groups()) - метод groups возвращает кортеж из элементов, которые доступны через индексы
+		('Lovelace, Ada')
+		print(result[0])
+		Lovelace, Ada
+		print(result[1])
+		Lovelace
+		print(result[2])
+		Ada
+
+##### More on Repetition Qualifiers
+	{} - символ повторения
+	{n} - точное количество повторений
+		re.search(r"[a-zA-Z]{5}", "a ghost")) .. match='ghost' - 1н символ точное количество повторений, выдается первое совпадение
+		re.findall(r"[a-zA-Z]{5}", "a scary ghost appeared")) - для всех повторений findall
+		['scary','ghost','appea'] - доп совпадение по части слова
+		re.findall(r"\b[a-zA-Z]{5}\b", "a scary ghost appeared")) - \b - word boundaries
+		['scary','ghost']
+
+	{n,n} - диапазон
+		re.findall(r"\w{5,10}", "I really like strawberries"))
+		['really','strawberri']
+	Диапазоны могут быть разомкнутыми
+		re.findall(r"\w{5,}", "I really like strawberries")) - от 5 и больше
+		['really','strawberries']
+
+		re.search(r"s\w{,20}", "I really like strawberries") -буква s и за ней вплоть до 20 символов
+		.. match ='strawberries'
+
+##### Extracting a PID Using regexes in Python
+	[****] = r"\[(d+)\]" - последовательность номеров в []
+	\[ - ищем скобку
+	( - открывающаяся скобка. т.к. нет экранирования, значит символ захвата группы
+	\d+ - одна или более цифр
+	) - закрытие группы
+	\] - экранирование закрывающей скобки
+	
+	Если нет совпадения - вернет NoneType error 
+
+def extract_pid(log_line):
+    regex = r"\[(\d+)\]"
+    result = re.search(regex, log_line)
+    if result is None:
+        return ""
+    return result[1]
+
+
+##### Splitting and Replacing
+	Ранее использовались функции r.search() и re.findall()
+	Есть и другие:
+	split - по аналогии с string split делит строку разделителем регуляркой
+		все что в [] считается строкой по умолчанию
+		re.split(r"[.?!]", "One sentence. Another one? And the last one!")
+		['One sentence', ' Another one', ' And the last one', ''] - разделители не попали
+		re.split(r"([.?!])", "One sentence. Another one? And the last one!") - добавляем захват
+		['One sentence', '.', ' Another one', '?', ' And the last one', '!', ''] - в итоговый list попало всё
+	sub - замена строки.  заменяя все или часть из них для другой строки, аналогично методу строки replace, 
+		но используя регулярные выражения как для сопоставления, так и для замены
+
+	маскируем email'ы:
+		re.sub(r"[\w.%+-]+@[\w.-]+", "[REDACTED]", "Recieved an email for go_nuts95@my.example.com")
+		'Recieved an email for [REDACTED]'
+
+	Смена Ф и И местами с помощью sub:
+	re.sub(r"^([\w .-]*), ([\w .-]*)$", r"\2 \1", "lovelace, Ada") - \1 и \2 - группы захвата из первой части
+	'Ada Lovelace'
+
+##### Backreferences - обратгые ссылки ????

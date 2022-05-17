@@ -1,0 +1,126 @@
+Files
+https://docs.python.org/3/library/functions.html#open
+https://docs.python.org/3/library/os.html
+https://docs.python.org/3/library/os.path.html
+https://en.wikipedia.org/wiki/Unix_time
+CSV
+https://docs.python.org/3/library/csv.html
+https://realpython.com/python-csv/
+
+
+!!!!!! Reading and Writing Files
+##### Чтение из файла
+	2 типа Workflow:
+	open - use - close - открыть/закрыть по команде
+	и
+	конструкция with - открыть/закрыть автоматом по завершении блока.
+
+	open - use - close
+		file = open("name.txt") - начать работу с файлом. (файл блокируется, выдается дескриптор)
+		файл должен лежать в директории или пишем абсолютный путь
+		Дескриптор - токен от ОС дающий расширенные права работы с файлом. хранитсякак атрибут обьекта file
+		число дескрипторов ограничено.
+
+		Методы:
+		file.readline() - читает файл построчно, сохраняя позицию
+		file.read() - вычитывает весь текст файла (с текущей позиции)
+		file.close() - завершить работу с файлом.
+
+	конструкция with:
+		with open("filename.txt") as file: - файл отпускается по завершению блока
+   		    print(file.read())
+
+##### Iterating
+	По файлам можно итерировать как по другим обьектам типа sequence (string, list...)
+		with open("filename.txt") as file:
+		    for line in file:
+		        print(line.strip().upper()) - strip уберет дублирование символов новой строки
+
+	Другой способ: вычитать строки файла в list
+		file = open("name.txt")
+		lines = file.readlines() - содержит list из строк файла
+		file.close()
+
+		lines.sort() - отсортирует в алфавитном порядке
+
+##### Запись
+	Файл открывается в несколких режимах, 
+	без параметра (with open("filename.txt")) = "r" - readonly
+		"r" - readonly
+		w - write only (если нет файла - создается)
+			!!!!!! Если файл есть - содержимое перезатирается при открытии
+			В этом режиме нельзя читать из файла
+		a = append - добавить в коней файла
+		r+ = read +write mode
+			with open("name.txt", "w") as file:
+				file.write("text text text")
+
+
+!!!!!! Managing Files and Directories
+##### Работа с файлами
+	os - модуль для работы с операцинкой
+	os.path - сабмодуль работы с информацией о файлах
+	datetime - модуль работы со временем
+	файлы, по умолчанию, ищутся в папке со скриптом 
+		os.remove("") - удалить файл
+		os.rename("имя","новое имя") - переименовать файл
+		os.path.exists("") - проверить наличие файла - true/false
+		os.path.getsize("") - return size в байтах
+		os.path.getmtime("") - last modified time in unix timestamp - secs from 01.01.1970
+		datetime.datetime.fromtimestamp(timestamp) - модуль.класс.метод
+		os.path.abspath("") - вернет полный путь
+	Папки:
+		os.getcwd() = pwd
+		os.mkdir() = new dir
+		os.chdir() = сменить папку
+		os.rmdir() = удалить пустую папку
+		os.listdir() = вернет list с содержимым папки типа str
+			os.path.isdir() = директория?
+		os.path.join(dir, name) - джоин с нужным разделителем (win - "\", linux, macOS - "/")
+
+
+!!!!!! Reading and Writing CSV Files
+##### Чтение CSV
+	Функция reader() - интерперитрует файл csv
+	import csv
+	f = open("csv_file.txt")  - открываем файл
+	csv_f = csv.reader(f) - обьект класса csv.reader, по которому можно итерировать. Функция reader()
+	for row in csv_f: - каждый row содержит ряд  в файле csv (list из элементов ряда)
+	    name, phone, role = row - распаковываем list в переменные
+	    print("Name: {}, Phone: {}, Role {}".format(name,phone, role))
+	f.close() - не забываем закрыть файл 
+
+	Доступ к конкретному полю row - row[i]
+
+
+##### Генерация CSV
+	Функция writer() - генерирует файл
+	writerow - пишет порядно
+	writewrows - пишет все сразу
+
+	Сначала создаем лист из данных:
+	hosts = [["workstation.local", "192.168.25.46"],["webserver.cloud", "10.2.5.6"]] - list of lists
+	with open('hosts.csv', 'w') as hosts_csv:
+	    writer = csv.writer(hosts_csv) - обьект класса csv.writer
+	    writer.writerows(hosts)
+
+
+
+##### Запись и чтение через словари
+	DictReader - для csv с заголовками. превращает каждый ряд в словарь
+	DictWriter - для записи
+	with open('software.csv') as software:
+	    reader = csv.DictReader(software)
+	    for row in reader:
+	        print (("{} has {} users").format(row["name"], row["users"]))
+
+	list of dictionaries
+	users = [{"name":"Sol Mansi","username":"solm","department":"IT"},
+		 {"name":"Lio Nelson","username":"lion","department":"UX"},
+		 {"name":"Charlie Grey","username":"greyc","department":"Dev"})
+
+	keys = ["name", "username", "department"] - определяем лист ключей (заголовки)
+	with open('by_department.csv', 'w') as by_department: - открываем файл на запись
+	    writer = csv.DictWriter(by_department, fieldnames=keys) - создам обьект dictWriter, передаем ключи 
+	    writer.writeheader() - пишем первый ряд, заголовок
+	    writer.writerows(users) - пишем данные
